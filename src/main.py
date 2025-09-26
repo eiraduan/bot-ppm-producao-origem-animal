@@ -1,9 +1,10 @@
 import logging
 import download
+import join_files
 # import clean_table
 # import create_table_map
 # import insert
-# import join_files
+
 from pathlib import Path
 
 def setup_master_logging(log_file='processo_completo.log'):
@@ -35,8 +36,8 @@ def main():
         logger.info("--- Etapa 1: Download dos arquivos ---")
         download.main()
         
-        # logger.info("--- Etapa 2: Unindo os arquivos ---")
-        # join_files.main()
+        logger.info("--- Etapa 2: Unindo os arquivos ---")
+        join_files.main()
         
         # logger.info("--- Etapa 3: Limpando tabelas no banco de dados ---")
         # clean_table.main()
