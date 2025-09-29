@@ -34,7 +34,7 @@ def main():
         
         clean_table = f"""
         TRUNCATE TABLE gisdb.gisadmin.{TABELA_DESTINO} RESTART IDENTITY;
-        DROP TABLE gisdb.gisadmin.mapa_dados_ppm_producao_origem_animal;
+        DROP TABLE gisdb.gisadmin.mapa_ppm_producao_origem_animal;
         """
         cursor.execute(clean_table)
         
