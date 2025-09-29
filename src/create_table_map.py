@@ -17,6 +17,11 @@ def main():
     user = os.getenv("DB_USER")
     password = os.getenv("DB_PASSWORD")
 
+    TABELA_MAPA = "mapa_ppm_producao_origem_animal"
+    TABELA_DADOS = "dados_ppm_producao_origem_animal"
+    TABELA_MUNICIPIOS = "ro_municipios_2022"
+
+
     try:
         logger.info("Tentando estabelecer a conexão com o banco de dados...")
         conexao = psycopg2.connect(
@@ -31,11 +36,11 @@ def main():
         cursor = conexao.cursor()
 
         # --- Criação da Tabela (com verificação para evitar erros) ---
-        logger.info("Verificando e criando a tabela 'mapa_ppm_efetivo_rebanhos' se ela não existir...")
+        logger.info(f"Verificando e criando a tabela '{TABELA_MAPA}' se ela não existir...")
         
         # Adiciona a verificação "IF NOT EXISTS" para evitar erros se a tabela já existir
-        create_table_query = """
-        CREATE TABLE gisadmin.mapa_ppm_efetivo_rebanhos AS
+        create_table_query = f"""
+        CREATE TABLE gisadmin.{TABELA_MAPA} AS
         SELECT
             dp.nivel_territorial_codigo,
             dp.nivel_territorial,
@@ -48,24 +53,24 @@ def main():
             dp.ano,
             dp.variavel_codigo,
             dp.variavel,
-            dp.tipo_rebanho_codigo,
-            dp.tipo_rebanho,
+            dp.tipo_produto_origem_animal_codigo,
+            dp.tipo_produto_origem_animal,
             rm.nm_mun,
             rm.shape AS geom
         FROM
-            gisadmin.dados_ppm_efetivo_rebanhos AS dp
+            gisadmin.{TABELA_DADOS} AS dp
         INNER JOIN
-            gisadmin.ro_municipios_2022 AS rm
+            gisadmin.{TABELA_MUNICIPIOS} AS rm
         ON
             CAST(dp.municipio_codigo AS VARCHAR) = rm.cd_mun;
 
-        ALTER TABLE gisadmin.mapa_ppm_efetivo_rebanhos ADD COLUMN id SERIAL PRIMARY KEY;
+        ALTER TABLE gisadmin.{TABELA_MAPA} ADD COLUMN id SERIAL PRIMARY KEY;
         """
 
         cursor.execute(create_table_query)
         
         conexao.commit()
-        logger.info("Tabela 'mapa_ppm_efetivo_rebanhos' verificada/criada com sucesso.")
+        logger.info(f"Tabela '{TABELA_MAPA}' verificada/criada com sucesso.")
 
     except Exception as e:
         logger.error(f"Erro: {e}")
